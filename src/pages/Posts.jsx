@@ -2,15 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
-function Posts() {
+const Posts = () => {
   const { id } = useParams()
   const [posts, setPosts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [searchId, setSearchID] = useState(id)
 
+  function onSearch() {
+    fetchPosts(searchId)
+  }
+  async function fetchPosts(userId) {
+    const { data } = await axios.get(`https://jsonplaceholder.typicode.com/posts?userId=${id}`)
+    setPosts(data)
+    setLoading(false)
+  }
   useEffect(() => {
-    async function fetchPosts() {
-      const { data } = await axios.get(`https://jsonplaceholder.typicode.com/${id}`)
-      setPosts(data)
-    }
     fetchPosts()
   }, [])
   return (
@@ -25,14 +31,7 @@ function Posts() {
           <button>Enter</button>
         </div>
       </div>
-      {
-        posts.map((post) => (
-          <div className="post">
-            <div className="post__title">{post.title}</div>
-            <p className="post__body">{post.body}</p>
-          </div>
-        ))
-      }
+
       <div className="post">
         <div className="post__title">
           <div className="post__title--skeleton"></div>
@@ -41,6 +40,12 @@ function Posts() {
           <p className="post__body--skeleton"></p>
         </div>
       </div>
+      {posts.map((post) => (
+        <div className="post">
+          <div className="post__title">{post.title}</div>
+          <p className="post__body">{post.body}</p>
+        </div>
+      ))}
     </>
   );
 }
