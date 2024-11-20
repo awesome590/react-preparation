@@ -1,8 +1,10 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Home() {
   const [users, setUsers] = useState([])
+  const navigate = useNavigate()
 
   async function getUsers() {
     const { data } = await axios.get('https://jsonplaceholder.typicode.com/users')
@@ -17,7 +19,7 @@ function Home() {
       <div className="row">
         <div className="user-list">
           {users.map((user) => (
-            <div className="user" key={user.id}>
+            <div className="user" key={user.id} onClick={() => navigate(`${user.id}`)}>
               <div className="user-card">
                 <div className="user-card__container">
                   <h3>{user.name}</h3>
